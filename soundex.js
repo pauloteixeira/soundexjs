@@ -1,30 +1,45 @@
-  var table = ['BFPV','CGJKQSXZ', 'DT', 'L', 'MN', 'R'];
+var Soundex = function () {
+  this.table = ['BFPV','CGJKQSXZ', 'DT', 'L', 'MN', 'R'];
 
-  function getSoundex( texto ) {
-    return soundexCore( texto );
+  this.getSoundex = function( texto ) {
+    return this.soundexCore( texto );
   }
 
-  function soundexCore( texto ) {
-    var vogais = '[aeiouhwy]';
-    var $palavra = texto;
-    var $letras = $palavra.match(/.{1,1}/g);
-
+  this.soundexCore = function( texto ) {
+    var vogais = '[aeiouhwy1234567890]';
+    var $palavra;
+    var $letras;
     var soundex = '';
     var cnt = 0;
     var fonemaAnterior = 0;
+    var self = this;
+
+    if( texto.split(' ').length > 1 ){
+      $arr = texto.split(' ');
+      var result = [];
+      $arr.forEach( function( item ) {
+        result.push(self.soundexCore( item ));
+      })
+
+      return result;
+    }
+
+    //console.log("Resultado: ", texto);
+    $palavra = texto;
+    $letras = $palavra.match(/.{1,1}/g);
 
     for( letra of $letras ) {
       if( cnt == 4 ) return soundex;
       // escreve no fonema a primeira letra caso seja a mesma no loop
       if( cnt == 0 ) {
-        soundex = letra + '-';
+        soundex = letra.toUpperCase() + '-';
         cnt++;
       }
       else {
         // escreve os demais fonemas
         re = new RegExp(vogais, 'ig');
         if( !letra.match(re) ) {
-          fonemaAtual = calculate(letra);
+          fonemaAtual = this.calculate(letra);
           if( !fonemaAnterior || ( fonemaAnterior && fonemaAnterior != fonemaAtual ) ) {
             soundex += fonemaAtual;
             fonemaAnterior = fonemaAtual;
@@ -48,9 +63,9 @@
     return soundex;
   }
 
-  function calculate(letra) {
+  this.calculate = function(letra) {
     var cnt = 0;
-    for( item of table ) {
+    for( item of this.table ) {
       texto = '['+item+']';
       re = new RegExp(texto, 'ig');
 
@@ -62,3 +77,4 @@
       cnt++;
     }
   }
+}
