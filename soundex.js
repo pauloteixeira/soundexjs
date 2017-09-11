@@ -2,7 +2,7 @@ var Soundex = function () {
   this.table = ['BFPV','CGJKQSXZ', 'DT', 'L', 'MN', 'R'];
 
   this.getSoundex = function( texto ) {
-    return this.soundexCore( texto );
+    return this.soundexCore( texto ).join(' ');
   }
 
   this.soundexCore = function( texto ) {
@@ -24,7 +24,6 @@ var Soundex = function () {
       return result;
     }
 
-    //console.log("Resultado: ", texto);
     $palavra = texto;
     $letras = $palavra.match(/.{1,1}/g);
 
@@ -53,9 +52,10 @@ var Soundex = function () {
 
     if( soundex.length < 5 ) {
       var somenteNumeros = soundex.split('-')[1];
-      var str = somenteNumeros[0];
+      var str = somenteNumeros.toString();
 
-      for( var i=0; i < 3 - str.length; i++ ){
+      var paramContagem = (3 - str.length);
+      for( var i=0; i < paramContagem; i++ ){
         soundex += '0';
       }
     }
